@@ -10,7 +10,7 @@ import time
 import json
 import logging
 import signal
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any
 from confluent_kafka import Producer
 from confluent_kafka.serialization import StringSerializer
@@ -91,7 +91,7 @@ def delivery_report(err, msg):
 def generate_order_message(order_id: int, sequence: int) -> Dict[str, Any]:
     """Generate an order message with sequence number and timestamp"""
     timestamp_ms = int(time.time() * 1000)
-    now_utc = datetime.now(datetime.UTC)
+    now_utc = datetime.now(timezone.utc)
     
     return {
         'order_id': f"order-{order_id}",
