@@ -14,8 +14,6 @@ from datetime import datetime
 from typing import Dict, Any
 from confluent_kafka import Producer
 from confluent_kafka.serialization import StringSerializer
-from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -93,12 +91,13 @@ def delivery_report(err, msg):
 def generate_order_message(order_id: int, sequence: int) -> Dict[str, Any]:
     """Generate an order message with sequence number and timestamp"""
     timestamp_ms = int(time.time() * 1000)
+    now_utc = datetime.now(datetime.UTC)
     
     return {
         'order_id': f"order-{order_id}",
         'sequence_number': sequence,
         'timestamp_ms': timestamp_ms,
-        'timestamp_iso': datetime.utcnow().isoformat() + 'Z',
+        'timestamp_iso': now_utc.isoformat().replace('+00:00', 'Z'),
         'customer_id': f"customer-{(order_id % 10000) + 1}",
         'product_id': f"product-{(order_id % 100) + 1}",
         'quantity': (order_id % 10) + 1,

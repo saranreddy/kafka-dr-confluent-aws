@@ -155,9 +155,9 @@ resource "aws_ecr_lifecycle_policy" "producer" {
       rulePriority = 1
       description  = "Keep last 10 images"
       selection = {
-        tagStatus     = "any"
-        countType     = "imageCountMoreThan"
-        countNumber   = 10
+        tagStatus   = "any"
+        countType   = "imageCountMoreThan"
+        countNumber = 10
       }
       action = {
         type = "expire"
@@ -174,9 +174,9 @@ resource "aws_ecr_lifecycle_policy" "consumer" {
       rulePriority = 1
       description  = "Keep last 10 images"
       selection = {
-        tagStatus     = "any"
-        countType     = "imageCountMoreThan"
-        countNumber   = 10
+        tagStatus   = "any"
+        countType   = "imageCountMoreThan"
+        countNumber = 10
       }
       action = {
         type = "expire"
@@ -187,10 +187,10 @@ resource "aws_ecr_lifecycle_policy" "consumer" {
 
 # DynamoDB Table for Consumer Sink
 resource "aws_dynamodb_table" "orders" {
-  name           = "${var.environment_name}-orders"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "order_id"
-  range_key      = "timestamp"
+  name         = "${var.environment_name}-orders"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "order_id"
+  range_key    = "timestamp"
 
   attribute {
     name = "order_id"
@@ -442,7 +442,7 @@ resource "aws_ecs_task_definition" "producer" {
   container_definitions = jsonencode([{
     name  = "producer"
     image = "${aws_ecr_repository.producer.repository_url}:latest"
-    
+
     environment = [
       {
         name  = "TOPIC_NAME"
@@ -453,7 +453,7 @@ resource "aws_ecs_task_definition" "producer" {
         value = "1000"
       }
     ]
-    
+
     secrets = [
       {
         name      = "KAFKA_BOOTSTRAP_SERVERS"
@@ -496,7 +496,7 @@ resource "aws_ecs_task_definition" "consumer" {
   container_definitions = jsonencode([{
     name  = "consumer"
     image = "${aws_ecr_repository.consumer.repository_url}:latest"
-    
+
     environment = [
       {
         name  = "TOPIC_NAME"
@@ -515,7 +515,7 @@ resource "aws_ecs_task_definition" "consumer" {
         value = var.aws_region_primary
       }
     ]
-    
+
     secrets = [
       {
         name      = "KAFKA_BOOTSTRAP_SERVERS"
@@ -605,17 +605,17 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type = "log"
         properties = {
-          query   = "SOURCE '${aws_cloudwatch_log_group.producer.name}' | fields @timestamp, @message | sort @timestamp desc | limit 20"
-          region  = var.aws_region_primary
-          title   = "Producer Logs"
+          query  = "SOURCE '${aws_cloudwatch_log_group.producer.name}' | fields @timestamp, @message | sort @timestamp desc | limit 20"
+          region = var.aws_region_primary
+          title  = "Producer Logs"
         }
       },
       {
         type = "log"
         properties = {
-          query   = "SOURCE '${aws_cloudwatch_log_group.consumer.name}' | fields @timestamp, @message | sort @timestamp desc | limit 20"
-          region  = var.aws_region_primary
-          title   = "Consumer Logs"
+          query  = "SOURCE '${aws_cloudwatch_log_group.consumer.name}' | fields @timestamp, @message | sort @timestamp desc | limit 20"
+          region = var.aws_region_primary
+          title  = "Consumer Logs"
         }
       }
     ]

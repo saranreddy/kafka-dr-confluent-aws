@@ -44,7 +44,8 @@ error() {
 
 record_timestamp() {
     local event="$1"
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     echo "${timestamp}" > "/tmp/failback-${event}.timestamp"
     log "Recorded ${event} timestamp: ${timestamp}"
 }
@@ -58,12 +59,16 @@ get_terraform_output() {
 create_reverse_link() {
     log "Creating reverse cluster link (secondary to primary)..."
     
-    local primary_cluster_id=$(get_terraform_output "primary_cluster_id")
-    local secondary_cluster_id=$(get_terraform_output "secondary_cluster_id")
+    local primary_cluster_id
+    local secondary_cluster_id
+    primary_cluster_id=$(get_terraform_output "primary_cluster_id")
+    secondary_cluster_id=$(get_terraform_output "secondary_cluster_id")
     
     if [[ -z "${primary_cluster_id}" ]] || [[ -z "${secondary_cluster_id}" ]]; then
         error "Could not retrieve cluster information from Terraform outputs"
     fi
+    
+    # Duplicate declarations removed - already done in create_reverse_link
     
     log "Primary cluster ID: ${primary_cluster_id}"
     log "Secondary cluster ID: ${secondary_cluster_id}"
@@ -94,7 +99,8 @@ sync_to_primary() {
 promote_primary() {
     log "Promoting primary cluster back to active..."
     
-    local primary_cluster_id=$(get_terraform_output "primary_cluster_id")
+    local primary_cluster_id
+    primary_cluster_id=$(get_terraform_output "primary_cluster_id")
     
     warn "SIMULATION: Would promote topic on primary cluster ${primary_cluster_id}"
     log "Primary cluster promotion initiated"
@@ -106,8 +112,10 @@ promote_primary() {
 update_active_bootstrap() {
     log "Updating active bootstrap endpoint to primary cluster..."
     
-    local primary_bootstrap=$(get_terraform_output "primary_cluster_bootstrap_endpoint")
-    local ssm_parameter_name="/${ENVIRONMENT_NAME}/active-bootstrap-endpoint"
+    local primary_bootstrap
+    local ssm_parameter_name
+    primary_bootstrap=$(get_terraform_output "primary_cluster_bootstrap_endpoint")
+    ssm_parameter_name="/${ENVIRONMENT_NAME}/active-bootstrap-endpoint"
     
     if [[ -z "${primary_bootstrap}" ]]; then
         error "Could not retrieve primary bootstrap endpoint"
@@ -173,8 +181,10 @@ cleanup_reverse_link() {
 generate_report() {
     log "Generating failback report..."
     
-    local start_ts=$(cat /tmp/failback-start.timestamp 2>/dev/null || echo "N/A")
-    local end_ts=$(cat /tmp/failback-end.timestamp 2>/dev/null || echo "N/A")
+    local start_ts
+    local end_ts
+    start_ts=$(cat /tmp/failback-start.timestamp 2>/dev/null || echo "N/A")
+    end_ts=$(cat /tmp/failback-end.timestamp 2>/dev/null || echo "N/A")
     
     cat > "/tmp/failback-report.txt" <<EOF
 ========================================
@@ -201,7 +211,7 @@ Note: System is now back to normal operation mode
 ========================================
 EOF
     
-    cat "/tmp/failback-report.txt" | tee -a "${LOG_FILE}"
+    tee -a "${LOG_FILE}" < "/tmp/failback-report.txt"
     log "Report saved to /tmp/failback-report.txt"
 }
 

@@ -12,12 +12,12 @@ resource "confluent_kafka_cluster" "primary" {
   availability = var.cluster_availability
   cloud        = "AWS"
   region       = var.aws_region_primary
-  
+
   dynamic "basic" {
     for_each = var.cluster_type == "BASIC" ? [1] : []
     content {}
   }
-  
+
   dynamic "standard" {
     for_each = var.cluster_type == "STANDARD" ? [1] : []
     content {}
@@ -46,12 +46,12 @@ resource "confluent_kafka_cluster" "secondary" {
   availability = var.cluster_availability
   cloud        = "AWS"
   region       = var.aws_region_secondary
-  
+
   dynamic "basic" {
     for_each = var.cluster_type == "BASIC" ? [1] : []
     content {}
   }
-  
+
   dynamic "standard" {
     for_each = var.cluster_type == "STANDARD" ? [1] : []
     content {}
@@ -221,8 +221,8 @@ resource "confluent_kafka_topic" "orders_primary" {
   rest_endpoint    = confluent_kafka_cluster.primary.rest_endpoint
 
   config = {
-    "retention.ms"    = tostring(var.orders_topic_retention_ms)
-    "cleanup.policy"  = "delete"
+    "retention.ms"     = tostring(var.orders_topic_retention_ms)
+    "cleanup.policy"   = "delete"
     "compression.type" = "snappy"
   }
 
@@ -319,51 +319,15 @@ resource "confluent_kafka_acl" "consumer_group_primary" {
 }
 
 # Schema Registry
-resource "confluent_schema_registry_cluster" "main" {
-  package = "ESSENTIALS"
+# Note: Schema Registry is automatically created at the environment level in Confluent Cloud.
+# The confluent_schema_registry_cluster resource type is not available in the provider.
+# Access via data source after manual enablement in Confluent Cloud UI, or use REST API.
+# For this demo, Schema Registry setup should be done via Confluent Cloud console.
 
-  environment {
-    id = confluent_environment.primary.id
-  }
-
-  region {
-    id = data.confluent_schema_registry_region.primary.id
-  }
-
-  lifecycle {
-    prevent_destroy = false
-  }
-}
-
-data "confluent_schema_registry_region" "primary" {
-  cloud   = "AWS"
-  region  = var.aws_region_primary
-  package = "ESSENTIALS"
-}
-
-resource "confluent_api_key" "schema_registry" {
-  display_name = "${var.environment_name}-schema-registry-key"
-  description  = "API key for Schema Registry"
-
-  owner {
-    id          = confluent_service_account.producer.id
-    api_version = confluent_service_account.producer.api_version
-    kind        = confluent_service_account.producer.kind
-  }
-
-  managed_resource {
-    id          = confluent_schema_registry_cluster.main.id
-    api_version = confluent_schema_registry_cluster.main.api_version
-    kind        = confluent_schema_registry_cluster.main.kind
-
-    environment {
-      id = confluent_environment.primary.id
-    }
-  }
-
-  lifecycle {
-    prevent_destroy = false
-  }
+# Placeholder outputs for Schema Registry
+# These will need to be manually configured or retrieved via data source
+locals {
+  schema_registry_endpoint = "https://psrc-xxxxx.us-east-2.aws.confluent.cloud"
 }
 
 # Cluster Link from Primary to Secondary

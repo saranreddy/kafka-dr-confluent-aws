@@ -82,19 +82,19 @@ output "consumer_secondary_api_key_secret" {
 }
 
 output "schema_registry_endpoint" {
-  description = "Schema Registry endpoint"
-  value       = confluent_schema_registry_cluster.main.rest_endpoint
+  description = "Schema Registry endpoint (placeholder - configure manually)"
+  value       = local.schema_registry_endpoint
 }
 
 output "schema_registry_api_key_id" {
-  description = "Schema Registry API key ID"
-  value       = confluent_api_key.schema_registry.id
+  description = "Schema Registry API key ID (placeholder - configure manually)"
+  value       = "SR_API_KEY_PLACEHOLDER"
   sensitive   = true
 }
 
 output "schema_registry_api_key_secret" {
-  description = "Schema Registry API key secret"
-  value       = confluent_api_key.schema_registry.secret
+  description = "Schema Registry API key secret (placeholder - configure manually)"
+  value       = "SR_API_SECRET_PLACEHOLDER"
   sensitive   = true
 }
 

@@ -42,7 +42,8 @@ error() {
 
 record_timestamp() {
     local event="$1"
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     echo "${timestamp}" > "/tmp/failover-${event}.timestamp"
     log "Recorded ${event} timestamp: ${timestamp}"
 }
@@ -56,8 +57,10 @@ get_terraform_output() {
 promote_mirror_topic() {
     log "Promoting mirror topic on secondary cluster..."
     
-    local secondary_cluster_id=$(get_terraform_output "secondary_cluster_id")
-    local cluster_link_id=$(get_terraform_output "cluster_link_id")
+    local secondary_cluster_id
+    local cluster_link_id
+    secondary_cluster_id=$(get_terraform_output "secondary_cluster_id")
+    cluster_link_id=$(get_terraform_output "cluster_link_id")
     
     if [[ -z "${secondary_cluster_id}" ]] || [[ -z "${cluster_link_id}" ]]; then
         error "Could not retrieve cluster information from Terraform outputs"
@@ -81,8 +84,10 @@ promote_mirror_topic() {
 update_active_bootstrap() {
     log "Updating active bootstrap endpoint to secondary cluster..."
     
-    local secondary_bootstrap=$(get_terraform_output "secondary_cluster_bootstrap_endpoint")
-    local ssm_parameter_name="/${ENVIRONMENT_NAME}/active-bootstrap-endpoint"
+    local secondary_bootstrap
+    local ssm_parameter_name
+    secondary_bootstrap=$(get_terraform_output "secondary_cluster_bootstrap_endpoint")
+    ssm_parameter_name="/${ENVIRONMENT_NAME}/active-bootstrap-endpoint"
     
     if [[ -z "${secondary_bootstrap}" ]]; then
         error "Could not retrieve secondary bootstrap endpoint"
@@ -143,8 +148,10 @@ restart_services() {
 generate_report() {
     log "Generating failover report..."
     
-    local start_ts=$(cat /tmp/failover-start.timestamp 2>/dev/null || echo "N/A")
-    local end_ts=$(cat /tmp/failover-end.timestamp 2>/dev/null || echo "N/A")
+    local start_ts
+    local end_ts
+    start_ts=$(cat /tmp/failover-start.timestamp 2>/dev/null || echo "N/A")
+    end_ts=$(cat /tmp/failover-end.timestamp 2>/dev/null || echo "N/A")
     
     cat > "/tmp/failover-report.txt" <<EOF
 ========================================
@@ -168,7 +175,7 @@ Note: Run measurement script to calculate RTO and RPO
 ========================================
 EOF
     
-    cat "/tmp/failover-report.txt" | tee -a "${LOG_FILE}"
+    tee -a "${LOG_FILE}" < "/tmp/failover-report.txt"
     log "Report saved to /tmp/failover-report.txt"
 }
 

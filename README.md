@@ -249,7 +249,9 @@ See [monitoring/README.md](monitoring/README.md) for detailed setup.
 
 **This demo incurs real AWS and Confluent Cloud costs!**
 
-### Estimated Monthly Costs
+### Estimated Monthly Costs (as of September 2024)
+
+**Note:** These are rough estimates for demonstration purposes. Actual costs will vary based on usage, region, and current pricing. Always check official pricing pages before deploying.
 
 | Service | Configuration | Estimated Cost |
 |---------|--------------|----------------|
@@ -260,6 +262,12 @@ See [monitoring/README.md](monitoring/README.md) for detailed setup.
 | DynamoDB | On-demand, low volume | ~$5/month |
 | Other AWS | VPC, CloudWatch, etc. | ~$25/month |
 | **Total** | | **~$1,770/month** |
+
+**Pricing References:**
+- [Confluent Cloud Pricing](https://www.confluent.io/confluent-cloud/pricing/)
+- [AWS ECS Fargate Pricing](https://aws.amazon.com/fargate/pricing/)
+- [AWS DynamoDB Pricing](https://aws.amazon.com/dynamodb/pricing/)
+- [AWS VPC Pricing](https://aws.amazon.com/vpc/pricing/)
 
 ### Cost Optimization
 
