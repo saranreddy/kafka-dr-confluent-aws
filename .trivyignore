@@ -1,0 +1,40 @@
+# Trivy Security Scan Ignore File
+# 
+# Format: CVE-ID or misconfig ID with justification comment above
+# Only add entries for false positives or accepted risks with clear justification
+
+# AVD-AWS-0031 (HIGH): ECR repository image tag mutability set to MUTABLE
+# Demo environment: Mutable tags allow iterative development and testing without
+# creating unique tags for every build. Production deployments should use IMMUTABLE.
+AVD-AWS-0031
+
+# AVD-AWS-0104 (CRITICAL): Security group rule allows unrestricted egress
+# Demo environment: ECS tasks require unrestricted egress to connect to Confluent
+# Cloud endpoints which span multiple AWS regions and use dynamic IPs. Production
+# deployments should use VPC PrivateLink or restrict to known CIDR ranges.
+AVD-AWS-0104
+
+# AVD-AWS-0164 (HIGH): Subnet associates public IP address
+# Demo environment: Public subnets with auto-assigned IPs are required for AWS
+# Fargate tasks that need both inbound (for metrics/health checks) and outbound
+# (Confluent Cloud) connectivity. Production should use private subnets with NAT Gateway.
+AVD-AWS-0164
+
+# AVD-AWS-0086, AVD-AWS-0087, AVD-AWS-0091, AVD-AWS-0093 (HIGH): S3 public access blocks
+# Demo environment: Terraform state bucket is private by default. Public access blocks
+# add defense-in-depth but are not required for non-sensitive demo data.
+# Production should enable all S3 public access blocks.
+AVD-AWS-0086
+AVD-AWS-0087
+AVD-AWS-0091
+AVD-AWS-0093
+
+# AVD-AWS-0132 (HIGH): S3 bucket not encrypted with customer managed key
+# Demo environment: Default SSE-S3 encryption is sufficient for non-sensitive demo data.
+# Production should use KMS customer managed keys for granular access control and audit.
+AVD-AWS-0132
+
+# AVD-AWS-0179 (HIGH): ECS cluster not encrypted at rest
+# Demo environment: Cluster encryption at rest provides minimal benefit for stateless
+# container workloads with no persistent volumes. Production should enable for compliance.
+AVD-AWS-0179

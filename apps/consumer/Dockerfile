@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# Pin specific Python version for security and reproducibility
+FROM python:3.11.10-slim-bookworm
 
 WORKDIR /app
 
