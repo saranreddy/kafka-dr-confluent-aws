@@ -1,0 +1,8 @@
+# Trivy Security Scan Ignore File
+# 
+# Format: CVE-ID or misconfig ID with justification comment above
+# Only add entries for false positives or accepted risks with clear justification
+#
+# Example:
+# # CVE-2024-XXXXX - False positive: vulnerability only affects Windows, we use Linux
+# CVE-2024-XXXXX

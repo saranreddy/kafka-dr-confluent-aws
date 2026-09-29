@@ -1,3 +1,4 @@
-confluent-kafka==2.3.0
-pytest==7.4.3
-pytest-cov==4.1.0
+# Updated to latest secure versions as of Sep 2026
+confluent-kafka==2.6.0
+pytest==8.3.3
+pytest-cov==6.0.0

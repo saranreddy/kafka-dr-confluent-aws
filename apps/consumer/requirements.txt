@@ -1,5 +1,6 @@
-confluent-kafka==2.3.0
-boto3==1.34.21
-pytest==7.4.3
-pytest-cov==4.1.0
-moto==4.2.10
+# Updated to latest secure versions as of Sep 2026
+confluent-kafka==2.6.0
+boto3==1.35.80
+pytest==8.3.3
+pytest-cov==6.0.0
+moto==5.0.26
