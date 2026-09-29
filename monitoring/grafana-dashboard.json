@@ -1,0 +1,285 @@
+{
+  "dashboard": {
+    "title": "Kafka DR - Cluster Linking & Mirror Lag",
+    "tags": ["kafka", "disaster-recovery", "confluent"],
+    "timezone": "UTC",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Mirror Lag (Messages)",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "kafka_cluster_link_mirror_topic_lag_messages",
+            "legendFormat": "Mirror Lag - {{topic}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Messages",
+            "format": "short"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ],
+        "alert": {
+          "name": "High Mirror Lag",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [10000],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "60s",
+          "handler": 1,
+          "message": "Mirror lag has exceeded 10,000 messages",
+          "noDataState": "no_data",
+          "notifications": []
+        }
+      },
+      {
+        "id": 2,
+        "title": "Producer Throughput (msg/s)",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "rate(kafka_producer_record_send_total[1m])",
+            "legendFormat": "Producer Rate"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Messages/sec",
+            "format": "short"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Consumer Lag (Messages)",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "kafka_consumer_lag",
+            "legendFormat": "Consumer Lag - {{topic}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Messages",
+            "format": "short"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Consumer Throughput (msg/s)",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "rate(kafka_consumer_records_consumed_total[1m])",
+            "legendFormat": "Consumer Rate"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Messages/sec",
+            "format": "short"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "End-to-End Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "histogram_quantile(0.95, rate(kafka_e2e_latency_ms_bucket[5m]))",
+            "legendFormat": "p95 Latency"
+          },
+          {
+            "refId": "B",
+            "expr": "histogram_quantile(0.99, rate(kafka_e2e_latency_ms_bucket[5m]))",
+            "legendFormat": "p99 Latency"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Milliseconds",
+            "format": "ms"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "ECS Task Status",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 16,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "aws_ecs_service_running_tasks_count{service_name=\"kafka-dr-demo-producer\"}",
+            "legendFormat": "Producer Tasks"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "DynamoDB Write Throughput",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 20,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "rate(aws_dynamodb_consumed_write_capacity_units_sum[5m])",
+            "legendFormat": "Write Capacity Units"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "WCU/sec",
+            "format": "short"
+          },
+          {
+            "label": "",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Cluster Link Status",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 24,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "kafka_cluster_link_state",
+            "legendFormat": "Link State (1=active, 0=inactive)"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          },
+          "thresholdsMode": "absolute"
+        },
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "red",
+              "value": null
+            },
+            {
+              "color": "green",
+              "value": 1
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

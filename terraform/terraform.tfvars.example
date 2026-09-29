@@ -1,0 +1,40 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# Confluent Cloud API credentials
+# Create at: https://confluent.cloud/settings/api-keys
+confluent_cloud_api_key    = "YOUR_CONFLUENT_CLOUD_API_KEY"
+confluent_cloud_api_secret = "YOUR_CONFLUENT_CLOUD_API_SECRET"
+
+# AWS Regions
+aws_region_primary   = "us-east-1"
+aws_region_secondary = "us-west-2"
+
+# Environment configuration
+environment_name      = "kafka-dr-demo"
+cluster_availability  = "SINGLE_ZONE"  # SINGLE_ZONE or MULTI_ZONE
+cluster_type          = "BASIC"        # BASIC, STANDARD, or DEDICATED
+
+# Topic configuration
+orders_topic_partitions   = 6
+orders_topic_retention_ms = 604800000  # 7 days
+
+# Application scaling
+producer_replicas = 2
+consumer_replicas = 2
+
+# ECS task sizing (CPU in units, 1024 = 1 vCPU)
+producer_cpu    = 512
+producer_memory = 1024
+consumer_cpu    = 512
+consumer_memory = 1024
+
+# Monitoring
+enable_cloudwatch_alarms  = true
+mirror_lag_alarm_threshold = 10000
+
+# Tags
+tags = {
+  Project     = "kafka-dr-demo"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+}
