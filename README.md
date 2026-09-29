@@ -249,9 +249,9 @@ See [monitoring/README.md](monitoring/README.md) for detailed setup.
 
 **This demo incurs real AWS and Confluent Cloud costs!**
 
-### Estimated Monthly Costs (as of September 2024)
+### Estimated Monthly Costs (as of September 2026)
 
-**Note:** These are rough estimates for demonstration purposes. Actual costs will vary based on usage, region, and current pricing. Always check official pricing pages before deploying.
+**Note:** These are unverified rough estimates for demonstration purposes. Actual costs will vary based on usage, region, and current pricing. Always check official pricing pages before deploying.
 
 | Service | Configuration | Estimated Cost |
 |---------|--------------|----------------|

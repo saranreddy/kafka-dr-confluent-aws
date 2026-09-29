@@ -109,7 +109,7 @@ This document compares two disaster recovery solutions for Apache Kafka:
 
 ## Cost Comparison
 
-**Note:** All costs are rough estimates as of September 2024 for demonstration purposes. Actual costs vary by region, usage patterns, and current pricing. Always consult official pricing pages before deployment.
+**Note:** All costs are unverified rough estimates as of September 2026 for demonstration purposes. Actual costs vary by region, usage patterns, and current pricing. Always consult official pricing pages before deployment.
 
 **Pricing References:**
 - [Confluent Cloud Pricing](https://www.confluent.io/confluent-cloud/pricing/)
